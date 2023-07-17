@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      redirect: "/home"
+      redirect: "/home"//重定向
     },
     {
       path: "/home",
@@ -23,6 +23,21 @@ const router = createRouter({
     {
       path: "/message",
       component: () => import("@/views/message/message.vue")
+    },
+    {
+      path: '/city',
+      component: () => import('@/views/city/city.vue')
+    },
+    {
+      path: '/search',
+      component: () => import('@/views/search/search.vue')
+    },
+    {
+      path: '/detail/:id',
+      component: () => import('@/views/detail/detail.vue'),
+      meta: {
+        hideTabBar: true
+      }
     }
   ]
 })

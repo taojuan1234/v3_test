@@ -4,60 +4,57 @@
     <div class="banner">
       <img src="@/assets/img/home/banner.webp" alt="">
     </div>
-    <div class="location">
-      <div class="city">广州</div>
-      <div class="position">
-        <span class="text">我的位置</span>
-        <img src="@/assets/img/home/icon_location.png" alt="">
-      </div>
-    </div>
-    <!-- <van-button type="primary">主要按钮</van-button>
-    <van-button type="success">成功按钮</van-button>
-    <van-button type="default">默认按钮</van-button>
-    <van-button type="warning">警告按钮</van-button>
-    <van-button type="danger">危险按钮</van-button> -->
-
+    <home-search-box></home-search-box>
+    <home-categories></home-categories>
+    <home-content></home-content>
   </div>
 </template>
 
 <script setup>
+
+import useHomeStore from "@/stores/modules/home";
 import HomeNavBar from "./cpns/home-nav-bar.vue";
-// import HomeNavBar from "./home_vant.vue";
+import HomeSearchBox from "./cpns/home-search-box.vue";
+import HomeCategories from "./cpns/home-categories.vue";
+import HomeContent from './cpns/home-content.vue'
+
+import useScroll from '@/hooks/useScroll'
+import { computed } from '@vue/reactivity';
+import { watch } from 'vue'
+
+const homeStore = useHomeStore();
+homeStore.fetchCategoriesData();
+homeStore.fetchHotSuggestData();
+homeStore.fetchHouselistData();
+
+const { isReachBottom, scrollTop } = useScroll()
+watch(isReachBottom, (newValue) => {
+  if (newValue) {
+    homeStore.fetchHouselistData().then(() => {
+      isReachBottom.value = false
+    })
+  }
+})
+
+// 搜索框显示的控制
+// const isShowSearchBar = ref(false)
+// watch(scrollTop, (newTop) => {
+//   isShowSearchBar.value = newTop > 100
+// })
+// 定义的可响应式数据, 依赖另外一个可响应式的数据, 那么可以使用计算函数(computed)
+const isShowSearchBar = computed(() => {
+  return scrollTop.value >= 360
+})
 </script>
 
 <style lang="less" scoped>
+.home {
+  padding-bottom: 60px;
+}
+
 .banner {
   img {
     width: 100%;
-  }
-}
-
-.location {
-  display: flex;
-  align-items: center;
-  height: 44px;
-  padding: 0 20px;
-
-  .city {
-    flex: 1;
-  }
-
-  .position {
-    width: 74px;
-    display: flex;
-    align-items: center;
-
-    .text {
-      position: relative;
-      top: 2px;
-      font-size: 12px;
-    }
-
-    img {
-      margin-left: 5px;
-      width: 18px;
-      height: 18px;
-    }
   }
 }
 </style>
